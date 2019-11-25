@@ -1,0 +1,191 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="text-align-bottom-10">
+      <!-- <h2 class="headear-title pointercursor">Todo</h2>
+      <img src="assets/images/notification/arrow.png" class="arow-icon">
+      <p class="push pointercursor">Overview</p> -->
+      <ul class="breadcrumb">
+          <li (click)="redirectToDeshboard('dashboard')">
+            <a>
+              <img src="assets/images/menu-icon/dashboard.png" style="width:26px;">Home</a>
+          </li>
+          <li>
+            <a class="pointercursor">
+              <img src="assets/images/menu-icon/Todo.png" style="width:26px;">Todo</a>
+          </li>
+          <li>
+            <a class="pointercursor">
+              <img src="assets/images/menu-icon/Help.png" style="width:26px;">Overview</a>
+          </li>
+        </ul>
+    </div>
+    <p class="alert-text">
+      <img src="assets/images/notification/alert.png" style="width: 26px;">&nbsp;View and manage all task
+    </p>
+  </div>
+</div>
+<div class="a-div">
+  <div class="row" style="margin: none !important;">
+    <div class="col-md-12 ">
+      <div class="row">
+        <div class="col-10 text-align">
+          <h2 class="headear-title" style="margin: 26px 0px 15px 0px !important;">My Task</h2>
+        </div>
+        <div class="col-2 flex-center">
+          <!-- <img src="assets/images/todo/3 dot.png" style="width: 34px"> -->
+        </div>
+      </div>
+      <div class="row" [formGroup]="todoForm">
+        <div class="col-md-4 pad-zer">
+          <div class="u-div">
+            <div class="row">
+              <div class="col-4">
+                <div class="row-hd-padding">
+                  <select name="select" class="form-control input-form-text" formControlName="folderId">
+                    <option [value]="null">Folder</option>
+                    <option class="option-css" *ngFor="let folder of folderList" [value]="folder.id">
+                      {{folder.folderName}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-8">
+                <div class="row-hd-padding">
+                  <input type="text" class="input-search" placeholder="Search here" (input)="onInputSearch($event)">
+                  <i class="icon-search searchIcon"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="u-div" style="height: 437px">
+            <!-- <div class="row ti-div" *ngIf="!todoData.id">
+              <div class="col-2 flex-center">
+                <img src="assets/images/todo/dot.png" class="hdr-icon">
+              </div>
+              <div class="col-6">
+                <p class="noti-title task-name">Title</p>
+                <span class="noti-title">-</span>
+              </div>
+              <div class="col-4 flex-center">
+                <a class="crm-action-edit">
+                  <img src="assets/images/todo/edit.png" style="width: 30px;">
+                </a>
+                <a class="crm-action-delete">
+                  <img src="assets/images/todo/remove.png" style="width: 26px;">
+                </a>
+              </div>
+            </div> -->
+            <!-- <div class="row ti-div" *ngIf="todoData.id">
+              <div class="col-2 flex-center">
+                <img src="assets/images/todo/dot.png" class="hdr-icon">
+              </div>
+              <div class="col-6">
+                <p class="noti-title">{{todoData.title}}</p>
+                <span class="noti-title">{{todoData.dueDate|date:'dd-MM-yyyy'}}</span>
+              </div>
+              <div class="col-4 flex-center">
+                <a class="crm-action-edit">
+                  <img src="assets/images/todo/edit.png" style="width: 30px;">
+                </a>
+                <a class="crm-action-delete">
+                  <img src="assets/images/todo/remove.png" style="width: 26px;" (click)="deleteTodo(todoData.id)">
+                </a>
+              </div>
+            </div> -->
+            <div style="height: 355px;max-height: 355px;overflow-y: scroll">
+              <div class="div-cls" (click)="onClickNewTodo()">
+                <a class="add">
+                  <img src="assets/images/todo/add.png" style=" cursor: pointer; width: 34px">
+                </a>
+                <p class="task-new">New Task</p>
+              </div>
+              <div *ngFor="let task of toDoList">
+                <div class="task-list">   
+                  <div [ngClass]="(task.id == todoData.id) ? 'row ti-div active-task' : 'row ti-div'" >
+                    <div class="col-2">
+                      <span class="task-dot"></span>
+                    </div>
+                    <div class="col-6">
+                      <p class="noti-title task-name" (click)="getTodoDetailById(task.id)">{{task.title}}</p>
+                      <span class="noti-title">{{task.dueDate|date:'dd-MM-yyyy'}}</span>
+                    </div>
+                    <div *ngIf="task.id == todoData.id" class="col-4 flex-center">
+                        <a class="crm-action-edit">
+                          <img src="assets/images/todo/edit.png" style="width: 30px;">
+                        </a>
+                        <a class="crm-action-delete">
+                          <img src="assets/images/todo/remove.png" style="width: 26px;" (click)="deleteTodo(task.id)">
+                        </a>
+                      </div>
+                  </div>
+
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-sm-12">
+
+              <div class="row">
+                <div class="col-12 u-div" style="display: flex !important;">
+                  <div class="col-2 row-hd-padding">
+                    <!-- <select name="select" class="form-control input-select-text">
+                      <option disabled="" selected hidden value="none">Montserrat</option>
+                      <option class="option-css">Published</option>
+                    </select> -->
+                  </div>
+                  <div class="col-2 row-hd-padding">
+                    <!-- <select name="select" class="form-control input-select-text">
+                      <option disabled="" selected hidden value="none">10 px</option>
+                      <option class="option-css">15 px</option>
+                      <option class="option-css">20 px</option>
+                      <option class="option-css">25 px</option>
+                    </select> -->
+                  </div>
+                  <div class="col-2" style="padding: 11px 0px;">
+                    <!-- <b style="margin: 11px;">B</b>
+                    <i style="margin: 11px;">I</i>
+                    <u style="margin: 11px;">U</u> -->
+                  </div>
+
+                  <div class="col-6 row-hd">
+                    <select name="select" class="form-control input-select-text" formControlName="userId">
+                      <option [value]="null">Assignee</option>
+                      <option *ngFor="let user of userList" [value]="user.id">{{user.firstName}} {{user.lastName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class=" col-12 text-box text-editor">
+                  <div class="row input-row1">
+                    <div class="col-md-8" style="padding: 0px;">
+                      <input type="text" formControlName="title" placeholder="Title" class="input-title">
+                    </div>
+                    <div class="col-md-4 input-row2">
+                      <div class="form-group filter-date">
+                        <angular2-date-picker class="form-all-none-css calender" name="datePosted" (onDateSelect)="onFilterInstitution(null)" formControlName="dueDate"
+                          [settings]="settings">
+                        </angular2-date-picker>
+                      </div>
+                      <!-- <input type="date" class="input-title2" formControlName="dueDate"> -->
+                    </div>
+                  </div>
+                  <!-- <textarea cols="30" rows="12" class="form-control text-area" placeholder="Input text here..."
+                    formControlName="description"></textarea> -->
+                  <quill-editor formControlName="description"></quill-editor>
+                  <div class="btn-div">
+                    <button class="btn btn-primary btn-save" (click)="todoForm.valid && onSubmit()">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

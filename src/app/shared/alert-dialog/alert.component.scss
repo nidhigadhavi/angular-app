@@ -1,0 +1,17 @@
+.alertMsg.alert-danger{
+    background-color: #f8d7da !important;
+}
+
+.alertMsg.alert-success{
+background-color: #d4edda;
+}
+
+.alertMsg.alert{
+    position: fixed;
+    top: 20px;
+    z-index: 9;
+    width: 400px;
+    left: 71%;
+    right: 0;
+    margin: 5% auto;
+}

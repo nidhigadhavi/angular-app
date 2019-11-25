@@ -1,0 +1,948 @@
+<div *ngIf="UserDivShow == 'ListUser'">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-align-bottom-10">
+
+                <ul class="breadcrumb">
+                    <li (click)='redirectToDeshboard("dashboard")'>
+                        <a>
+                            <img src="assets/images/menu-icon/dashboard.png" style="width:26px; height:25px;">Home</a>
+                    </li>
+                    <li>
+                        <a class="pointercursor">
+                            <img src="assets/images/menu-icon/Users.png" style="width:26px;">Users</a>
+                    </li>
+                    <li>
+                        <a class="pointercursor activeEle">
+                            <img src="assets/images/notification/alert.png" style="width:26px;">Overview</a>
+                    </li>
+                </ul>
+            </div>
+            <p class="alert-text mb-0">
+                <img src="assets/images/notification/alert.png" style="width: 26px;">&nbsp;View and manage all registered user profile</p>
+        </div>
+        <div class="col-md-6">
+            <div style="text-align: right">
+            </div>
+        </div>
+    </div>
+    <div class="card bg-none" style="box-shadow: none !important;border-radius: 10px; padding:15px !important;" [formGroup]="userSearchForm">
+        <div class="row sort-box">
+            <div class="col-md-2">
+                <div class="sort-box-title course-sort-box">
+                    <div class="sort-dropdown">
+                        Sort by
+                        <i class="fa fa-sliders " aria-hidden="true" [ngbPopover]="popContent" placement="bottom" #p="ngbPopover" [autoClose]="'outside'"
+                            (click)="$event.stopPropagation()"></i>
+                    </div>
+                    <div class="row-per-page">
+                        <span>Rows per page :</span>
+                        <select (change)="onPageSizeChanged($event.target.value)" class="sort-select">
+                            <option *ngFor="let opt of limitOptions" [value]="opt.value">{{opt.key}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <ng-template #popContent>
+                    <div>
+                        <ul>
+                            <li (click)="sortSelection('name')" class="sort-listing">
+                                <span id="name-dot" class=""></span>
+                                <span class="sort-selection-lable">User Name</span>
+                            </li>
+                            <li (click)="sortSelection('citisenship')" class="sort-listing">
+                                <span id="citisenship-dot" class=""></span>
+                                <span class="sort-selection-lable">Citizenship</span>
+                            </li>
+                            <li (click)="sortSelection('old')" class="sort-listing">
+                                <span id="old-dot" class=""></span>
+                                <span class="sort-selection-lable">Old</span>
+                            </li>
+                            <li (click)="sortSelection('new')" class="sort-listing">
+                                <span id="new-dot" class=""></span>
+                                <span class="sort-selection-lable">New</span>
+                            </li>
+                        </ul>
+                    </div>
+                </ng-template>
+            </div>
+            <div class="col-md-7 sort-category">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group  select-arrow">
+                            <select id="country" formControlName="country" class="form-control input-form-text" (change)="onFilterInstitution(null); getCitiesByCountry($event)">
+                                <option [value]="null"> Choose Country</option>
+                                <option *ngFor="let country of CountryResponceObj" [value]="country.id">{{country.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group select-arrow">
+                            <select name="city" class="form-control input-form-text" formControlName="city" (change)="onFilterInstitution(null)">
+                                <option [value]="null"> Choose City</option>
+                                <option *ngFor="let city of CityResponseObj" [value]="city.id">{{city.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group select-arrow">                           
+                            <select name="statuser" class="form-control input-form-text" formControlName="status" (change)="onFilterInstitution(null)">
+                                <option [value]="true"> Choose Status</option>
+                                <option *ngFor="let city of StatusList" [value]="city.value">{{city.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group filter-date ">
+                            <angular2-date-picker class="form-all-none-css input-form-text calender" formControlName="signUpDate" name="datePosted" (onDateSelect)="onFilterInstitution(null)"
+                                [settings]="settings">
+                            </angular2-date-picker>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cssSearchBox">
+                    <label class="no-margin text-align">
+                        <input type="search" formControlName="searchKeyword" class="form-control input-sm full-data-search noCssSearch wid-100" placeholder="Search here..."
+                            (blur)="onFilterInstitution(null)">
+                        <i class="icon-search searchIcon"></i>
+                    </label>
+                </div>
+                <div class="text-right">
+                    <button type="reset" (click)="clearAll()" class="btn btn-primary btn-cancel mt-0 p-0">
+                        <span class="clearall">CLEAR ALL</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9 bg-left-prf no-padding">
+                <div class="dt-responsive">
+                    <div class="table-responsive">
+                        <ngx-datatable #myTable class="material student-profile-table" [rows]="rows" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+                            [rowHeight]="'auto'" [externalPaging]="true" [count]="page.totalElements" [offset]="page.pageNumber"
+                            [selected]="selected" [limit]="rowsOnPage" (page)='onFilterInstitution(null)' [selectionType]="SelectionType.single"
+                            (select)="onSelect($event)" (sort)="sortCallback($event)">
+                            <ngx-datatable-column name="Id" class="tab-head">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <span>{{row.id}}</span>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Name">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <p class="table-data-text">{{row.name}}</p>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Email">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <p class="table-data-text">{{row.email}}</p>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Citizenship">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <p class="table-data-text">{{row.citizenShip}}</p>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Location">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <p class="table-data-text">{{row.location}}</p>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="CreatedAt">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+
+                                    <p class="table-data-text">{{row.createdAt|date:'dd/MM/yyyy'}}</p>
+                                    <span class="table-data-text">{{row.createdAt|date:'h:mm a'}}</span>
+
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Status">
+                                <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <!--<span class="label label-rad" [ngClass]="{'label-danger':row.status == 'REJECTED' || row.status == 'FAILED','label-primary':row.status == 'SUBMITTED'||row.status=='INSTITUTE_SUBMITTED','label-success':row.status == 'SEEKA_REVIEWED'||row.status == 'INSTITUTE_REVIEWED'||row.status == 'APPLICANT_APPROVED'||row.status == 'APPROVED','label-warning':row.status == 'PREPARED'||row.status == 'INSTITUTE_OFFERED'}">{{row.status}}</span>-->
+                                    <!-- <ui-switch class="js-single" color="#13b8eb"
+                                     switchColor="#fff" size="small"></ui-switch> -->
+                                    <ui-switch class="js-single" color="#13b8eb" (change)="ActiavteDeactivate($event,row)" switchColor="#fff" size="small" [(ngModel)]="row.status"
+                                        formControlName="status"></ui-switch>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Action">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                    <!-- <a style="cursor: pointer" (click)="openMyModal($event)">View Details</a> -->
+                                    <a (click)="UserDivShow = 'UpdateUser' ; getUserProfileById(row.id)">
+                                        <img src="assets/images/edit.png" alt="">
+                                    </a>
+                                    <a (click)="deleteUserProfile(row)">
+                                        <img src="assets/images/delete.png" alt="">
+                                    </a>
+                                </ng-template>
+                            </ngx-datatable-column>
+                        </ngx-datatable>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 bg-cover-prf">
+                <div class="row">
+                    <div class="col-md-12" *ngIf="Userdetail !== undefined">
+                        <div class="img-pro text-center">
+
+                            <img class="user-img img-radius img-pro border-outline" src="{{Userdetail == undefined ? 'assets/images/user-profile/user-img.jpg' : Userdetail.storageDto == null ? 'assets/images/user-profile/user-img.jpg' : Userdetail.storageDto.imageURL }} "
+                                alt="user-img">
+                            <i class="icofont icofont-ui-edit m-r-10 edit-posi" (click)="modalLarge.show();ArticleDivShow='COURSES'"></i>
+                        </div>
+                        <div>
+                            <h2 class="pro-name">{{Userdetail.firstName}} {{Userdetail.lastName}}</h2>
+                            <h5 class="pro-loca">{{Userdetail.citizenship}}</h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">Email</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{Userdetail.email}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">Phone</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{UserDeviceDetailObj.mobileNo}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">IP</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{UserDeviceDetailObj.ipAddress}}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 align-padding">
+                                <h4 class="lebel-te">
+                                    User Details
+                                </h4>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">Last seen</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">27 may 2019 11:00 AM</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">User citizenship</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{Userdetail.citizenship}}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">The country like to study at</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{Userdetail.countryOrgin}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">Hobbies</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">Snowboarding, Gardening, Running</p>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12 align-padding">
+                                <h4 class="lebel-te">
+                                    Device Properties
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">sdkVersionCode</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{UserDeviceDetailObj.sdkVersionCode}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">App Version</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{UserDeviceDetailObj.appVersion}}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">Os</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{UserDeviceDetailObj.platform}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">Os Version</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{UserDeviceDetailObj.osVersion}}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5 align-padding">
+                                <p class="user-label">Model</p>
+                            </div>
+                            <div class="col-md-7 align-padding">
+                                <p class="user-info-label">{{UserDeviceDetailObj.model}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="UserDivShow == 'UpdateUser'">
+    <form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-align-bottom-10">
+                    <ul class="breadcrumb">
+                        <li (click)='redirectToDeshboard("dashboard")'>
+                            <a>
+                                <img src="assets/images/menu-icon/dashboard.png" style="width:26px;">Home</a>
+                        </li>
+                        <li (click)="UserDivShow = 'ListUser'" (click)='redirectToDeshboard("ListUser")'>
+                            <a class="pointercursor">
+                                <img src="assets/images/menu-icon/Users.png" style="width:26px;">User</a>
+                        </li>
+                        <li>
+                            <a class="pointercursor">
+                                <img src="assets/images/notification/alert.png" style="width:26px;">Student Info</a>
+                        </li>
+                    </ul>
+                </div>
+                <p class="alert-text mb-0">
+                    <img src="assets/images/notification/alert.png" style="width: 26px;">&nbsp;Edit student info</p>
+            </div>
+        </div>
+        <div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form [formGroup]="userPersonalInfoForm" #userPersonalInfoFormDirective="ngForm" id="userform">
+                            <div class="card-header-box">
+                                <div class="box-header">
+                                    <h3 class="Schl-header">PERSONAL INFORMATION</h3>
+                                </div>
+                                <div class="box-action">
+                                    <div class="institute-action" (click)="doToggleView('userPersonalInfoForm')" *ngIf="userPersonalInfoForm.disabled">
+                                        <img src="assets/images/edit.png" alt="">
+                                        <span class="Save">Edit Data</span>
+                                    </div>
+                                    <div class="institute-action" *ngIf="!userPersonalInfoForm.disabled">
+                                        <span class="edit" (click)="saveUserPersonalDetail()">Save</span>
+                                        <span class="delete" (click)="doToggleView('userPersonalInfoForm')"> Cancle</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="noti-title">Status</label>
+                                        <span class="switch">
+                                            Enabled
+                                            <ui-switch formControlName="status" class="js-single" color="#13b8eb" switchColor="#fff" size="small"></ui-switch>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="noti-title">First Name</label>
+                                        <input type="text" id="fname" class="form-control input-box" placeholder="Nicki" formControlName="firstName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="noti-title">Middle Name</label>
+                                        <input type="text" id="mname" formControlName="middleName" class="form-control input-box" placeholder="Gladys" [disabled]="disableUserPersonalInfo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="noti-title">Last Name</label>
+                                        <input type="text" id="lname" formControlName="lastName" class="form-control input-box" placeholder="Petterson" [disabled]="disableUserPersonalInfo">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row form-select">
+                                        <div class="col-md-6">
+                                            <div class="form-group select-arrow">
+                                                <label for="message" class="noti-title">Country</label>
+
+                                                <select name="country" class="form-control input-form-text" formControlName="countryOrgin">
+
+                                                    <option *ngFor="let country of CountryResponceObj" [value]="country.name">{{country.name}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group select-arrow">
+                                                <label for="message" class="noti-title">Citizenship</label>
+                                                <select name="country" class="form-control input-form-text" formControlName="citizenship">
+                                                    <option *ngFor="let country of CountryResponceObj" [value]="country.name">{{country.name}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group select-arrow filter-date">
+                                                <label for="message" class="noti-title">Date Of Birth</label>
+                                                <angular2-date-picker style="border-bottom: 1px solid black !important;" name="date" [settings]="settings" formControlName="dob"
+                                                    [disabled]="disableUserPersonalInfo">
+                                                </angular2-date-picker>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group select-arrow">
+                                                <label for="message" class="noti-title">Gender</label>
+                                                <select name="level" class="form-control input-form-text" formControlName="gender" [disabled]="disableUserPersonalInfo">
+                                                    <option value="null">Choose Gender</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="noti-title">Email</label>
+                                        <input formControlName="email" type="text" id="fname" class="form-control input-box" placeholder="Nicki_12@gmail.com" [disabled]="disableUserPersonalInfo">
+                                    </div>
+                                    <div class="row form-select">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="noti-title">Phone Number</label>
+                                                <input type="text" formControlName="mobileNo" id="mname" class="form-control input-box" placeholder="06-389-09181" [disabled]="disableUserPersonalInfo">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="noti-title">Skype</label>
+                                                <input type="text" id="lname" formControlName="skypeId" class="form-control input-box" placeholder="skype_id" [disabled]="disableUserPersonalInfo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <form [formGroup]="userEducationQualificationForm" #userEducationQualificationFormDirective="ngForm" id="userform">
+                            <div class="card-header-box">
+                                <div class="box-header">
+                                    <h3 class="Schl-header">EDUCATION</h3>
+                                </div>
+                                <div class="box-action">
+                                    <div class="institute-action" (click)="doToggleView('userEducationQualificationForm')" *ngIf="userEducationQualificationForm.disabled">
+                                        <img src="assets/images/edit.png" alt="">Edit Data</div>
+                                    <div class="institute-action" *ngIf="!userEducationQualificationForm.disabled">
+                                        <span class="edit" (click)="saveUserEducationDetail()">Save</span>
+                                        <span class="delete" (click)="doToggleView('userEducationQualificationForm')"> Cancle</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                    <div class="form-group select-arrow">
+                                        <label for="message" class="noti-title">Education Country</label>
+                                        <select name="country" class="form-control input-form-text" formControlName="educationCountryId" (change)="getEducationSystemFromCountry($event.target.value)">
+                                            <option [value]="null">Choose Country</option>
+                                            <option *ngFor="let country of CountryResponceObj" [value]="country.id">{{country.name}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group select-arrow">
+                                        <label for="message" class="noti-title">Education System</label>
+                                        <select name="country" class="form-control input-form-text" formControlName="educationSystemId">
+                                            <option [value]=null>Choose Education System</option>
+                                            <option *ngFor="let country of EducationSystemResponseObj" [value]="country.id">{{country.name}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group select-arrow form-select">
+                                        <label for="message" class="noti-title">Highest Education Level</label>
+                                        <select name="select" class="form-control input-form-text" formControlName="educationLevelId" (change)="levelChanged($event.target.value)">
+                                            <option [value]="null">Choose Level</option>
+                                            <option class="option-css" *ngFor="let level of LevelResponceObj" [value]="level.id">
+                                                {{level.name}}</option>
+                                        </select>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="noti-title">Institution</label>
+                                        <input type="text" id="fname" class="form-control input-box" formControlName="educationInstitue" placeholder="Edward School of  Business">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="noti-title">Is English Medium ?</label>
+                                        <!-- <input type="text" id="fname" class="form-control input-box" formControlName="institute" placeholder="Edward School of  Business"> -->
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" id="customRadio1" value="true" formControlName="isEnglishMedium" name="isEnglishMedium" class="custom-control-input">
+                                            <label class="custom-control-label" for="customRadio1">Yes</label>
+                                        </div>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" id="customRadio2" name="isEnglishMedium" value="false" formControlName="isEnglishMedium" class="custom-control-input">
+                                            <label class="custom-control-label" for="customRadio2">No</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group duration-select">
+                                        <label class="noti-title">Duration</label>
+                                        <div class="duration-box">
+                                            <span>Form</span>
+                                            <div class="form-group select-arrow">
+                                                <select name="form" class="form-control" formControlName="fromDuration">
+                                                    <option>2017</option>
+                                                    <option>2018</option>
+                                                    <option>2019</option>
+                                                    <option>2016</option>
+                                                    <option>2015</option>
+                                                    <option>2014</option>
+                                                </select>
+                                            </div>
+                                            <span>To</span>
+                                            <div class="form-group select-arrow">
+                                                <select name="to" class="form-control" formControlName="toDuration">
+                                                    <option>2017</option>
+                                                    <option>2018</option>
+                                                    <option>2019</option>
+                                                    <option>2016</option>
+                                                    <option>2015</option>
+                                                    <option>2014</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6" *ngIf="isHighschool">
+                                    <form [formGroup]="userSubjectGreadForm" #userSubjectGreadFormDirective="ngForm" id="userSubjectGreadForm">
+                                        <div class="grade-add-box">
+
+                                            <div class="add-subject">
+                                                <div class="form-group select-arrow">
+                                                    <label class="noti-title">Subject</label>
+                                                    <select name="country" class="form-control input-form-text" formControlName="subjectId">
+                                                        <option [value]="null"> Choose Subject</option>
+                                                        <option *ngFor="let subject of EducationSystemResponseObj[0]['subjects']" [value]="subject.id">{{subject.subjectName}}</option>
+                                                    </select>
+                                                    <!-- <input type="text" id="mname" class="form-control input-box" placeholder=""> -->
+                                                </div>
+                                            </div>
+                                            <div class="add-grade">
+                                                <div class="form-group">
+                                                    <label class="noti-title">Grade</label>
+                                                    <input type="text" id="grade" name="grade" class="form-control input-box" formControlName="grade" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="add-img" (click)="AddSubject(e)">
+                                                <img class="icon-dt" src="assets/images/Scholarship/add.png">
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                    <div class="grade-list-box">
+                                        <div class="garde-list" *ngFor="let val of subjectGreadArray">
+                                            {{val.gread}} **** {{val.subjectId}} **** {{val.subjectName}}
+                                            <span>{{val.subjectId}}</span>
+                                            <span>{{val.grade}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" *ngIf="!isHighschool">
+                                    <div class="grade-add-box">
+                                        <div class="add-subject">
+                                            <div class="form-group">
+                                                <label class="noti-title">CGPA</label>
+                                                <input type="text" id="mname" formControlName="gpaScore" class="form-control input-box" placeholder="">
+                                            </div>
+                                        </div>
+                                        <!-- <div class="add-img">
+                                            <img class="icon-dt" src="assets/images/Scholarship/add.png">
+                                        </div> -->
+                                    </div>
+                                </div>
+
+                                <!-- <div class="col-md-6">
+                                    <div class="grade-add-box">
+                                        <div class="add-subject">
+                                            <div class="form-group">
+                                                <label class="noti-title">Subject</label>
+                                                <input type="text" id="mname" class="form-control input-box" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="add-grade">
+                                            <div class="form-group">
+                                                <label class="noti-title">Grade</label>
+                                                <input type="text" id="mname" class="form-control input-box" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="add-img">
+                                            <img class="icon-dt" src="assets/images/Scholarship/add.png">
+                                        </div>
+                                    </div>
+                                    <div class="grade-list-box">
+                                        <div class="garde-list">
+                                            <span>Operating Systems</span>
+                                            <span>A+</span>
+                                        </div>
+                                        <div class="garde-list">
+                                            <span>Desig & Analysis Algorithms</span>
+                                            <span>A+</span>
+                                        </div>
+                                        <div class="garde-list">
+                                            <span>Mathemathic</span>
+                                            <span>A+</span>
+                                        </div>
+                                        <div class="garde-list">
+                                            <span>Mathemathic</span>
+                                            <span>A+</span>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <form [formGroup]="userAchivementsForm" #userAchivementsFormDirective="ngForm" id="userform">
+                            <div class="card-header-box">
+                                <div class="box-header">
+                                    <h3 class="Schl-header">ACHIEVEMENTS</h3>
+                                </div>
+                                <div class="box-action">
+                                    <div class="institute-action" (click)="doToggleView('userAchivementsForm')" *ngIf="userAchivementsForm.disabled">
+                                        <img src="assets/images/edit.png" alt="">
+                                        <span class="Save"> Edit Data</span>
+                                    </div>
+                                    <div class="institute-action" *ngIf="!userAchivementsForm.disabled">
+                                        <span class="edit" (click)="addAchivement()">Save</span>
+                                        <span class="delete" (click)="doToggleView('userAchivementsForm')"> Cancle</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row add-achivement" *ngIf="!userAchivementsForm.disabled" (click)="addAchivement()">
+                                Add
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="noti-title">Title</label>
+                                        <input type="text" id="title" class="form-control input-box" formControlName="title" placeholder="Edward School of  Business">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="noti-title">Description</label>
+                                        <textarea name="message" id="description" cols="30" formControlName="description" rows="6" class="form-control desc-box"
+                                            placeholder="Any regular activity that does not include attainment of an award, scholarship, or other means of recognition should not be listed as an accomplishment since your abilit be extraordinary has not been measured by an organization."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="noti-title">Authority Issued</label>
+                                        <input type="text" id="fname" class="form-control input-box" formControlName="authorityIssued" placeholder="Edward School of  Business">
+                                    </div>
+                                    <div class="row form-select">
+                                        <div class="col-md-6">
+                                            <div class="form-group select-arrow">
+                                                <label for="message" class="noti-title">Month</label>
+                                                <select name="level" class="form-control input-form-text" formControlName="month">
+                                                    <option [value]='null'>Choose Month</option>
+                                                    <option *ngFor="let month of ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];"
+                                                        [value]="month">{{month}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group select-arrow">
+                                                <label for="message" class="noti-title">Year</label>
+                                                <select name="level" class="form-control input-form-text" formControlName="year">
+                                                    <option [value]='null'>Choose year</option>
+                                                    <option *ngFor="let year of [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];" [value]="year">{{year}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rTable" *ngIf="EducationAcivementArray.length >0">
+                                <div class="rTableRow">
+                                    <div class="rTableHead">
+                                        <strong>Title</strong>
+                                    </div>
+                                    <div class="rTableHead">
+                                        <span style="font-weight: bold;">Description</span>
+                                    </div>
+
+                                    <div class="rTableHead">
+                                        <span style="font-weight: bold;">Authority Issued By</span>
+                                    </div>
+
+                                    <div class="rTableHead">
+                                        <span style="font-weight: bold;">Achivement Date</span>
+                                    </div>
+                                    <div class="rTableHead">Action</div>
+
+                                </div>
+                                <div class="rTableRow" *ngFor="let edu of EducationAcivementArray">
+                                    <div class="rTableCell">{{edu.title}}</div>
+                                    <div class="rTableCell">
+                                        <a href="tel:0123456785">{{edu.description}}</a>
+                                    </div>
+
+                                    <div class="rTableCell">
+                                        <a href="tel:0123456785">{{edu.authorityIssued}}</a>
+                                    </div>
+
+                                    <div class="rTableCell">
+                                        <a href="tel:0123456785">{{edu.month}} - {{edu.year}}</a>
+                                    </div>
+                                    <div class="rTableCell">
+                                        <img src="assets/images/delete.png" alt="" (click)="deleteAchivement(edu)">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<app-modal-basic #modalLarge [dialogClass]="'modal-lg'" class="user-modal">
+    <div class="app-modal-header wid-100">
+         <div class="cross">
+            <img class="pdf-icons" src="assets/images/courses/cross.png" (click)="modalLarge.hide()">
+        </div> 
+    </div>
+    <div class="app-modal-body">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <img class="user-img img-radius img-pro-2 border-outline" src="assets/images/user-profile/user-img.jpg" alt="user-img">
+                <!-- <button type="button" class="btn btn-primary ripple light btn-change-pic">Change Picture</button> -->
+                <div class="posi-active">
+                    <span class="badge bg-c-green bad"></span>Active User
+                </div>
+            </div>
+            <div class="col-md-9 posi-rel">
+                <div class="row" *ngIf="ArticleDivShow == 'COURSES'">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="cssSearchBox">
+                            <!-- <label class="no-margin text-align">
+                                <input class="form-control input-sm full-data-search noCssSearch wid-100" placeholder="Search.." type="search">
+                                <i class="icon-search searchIcon"></i>
+                            </label> -->
+                        </div>
+
+                        <div>
+                            <p class="recent-srch">Recent searches</p>
+                        </div>
+
+                        <div class="hit-scroll">
+                            <div class="row" style="padding: 0px 22px;">
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div *ngFor='let sel of [1,1,1,1,1]' class="line-spc">
+                                        <p class="uni-name">Texas A & M University</p>
+                                        <p class="uni-location">Austin Texas, United States</p>
+                                        <p class="uni-sub">Psychology, Fine Arts</p>
+                                        <p class="uni-year">2 Year</p>
+                                        <p class="uni-doller">$32,000</p>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div *ngFor='let sel of [1,1,1,1,1]' class="line-spc">
+                                        <p class="uni-name">Texas A & M University</p>
+                                        <p class="uni-location">Austin Texas, United States</p>
+                                        <p class="uni-sub">Psychology, Fine Arts</p>
+                                        <p class="uni-year">2 Year</p>
+                                        <p class="uni-doller">$32,000</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="ArticleDivShow == 'EDITPROFILE'" class="posi-rel">
+                    <p class="edit-text">Edit</p>
+                    <p class="per-info-text">Personal Information</p>
+                    <img class="posi-add" src="assets/images/users/userplus.png">
+                    <div class="form-radio">
+                        <form>
+                            <div class="radio radio-inline">
+                                <label>
+                                    <input type="radio" name="radio" checked="checked">
+                                    <i class="helper"></i>Mr.
+                                </label>
+                            </div>
+                            <div class="radio radio-inline">
+                                <label>
+                                    <input type="radio" name="radio">
+                                    <i class="helper"></i>Miss.
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <div class="hit-scroll">
+                        <div class="row" style="padding-top: 12px;">
+                            <div class="col-md-3">
+                                <label class="label-form-top">First Name</label>
+                                <input type="text" class="form-control input-form-text" placeholder="Nicki" required="">
+                            </div>
+                            <div class="col-md-3 ">
+                                <label class="label-form-top">Middle Name</label>
+                                <input type="text" class="form-control input-form-text" placeholder="Gladys" required="">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="label-form-top">Last Name</label>
+                                <input type="text" class="form-control input-form-text" placeholder="Patterson" required="">
+                            </div>
+                        </div>
+
+                        <div class="row" style="padding: 10px 0px;">
+                            <div class="col-md-3">
+                                <label class="label-form-top">Gender</label>
+                                <input type="text" class="form-control input-form-text" placeholder="Female" required="">
+                            </div>
+                            <div class="col-md-3 ">
+                                <label class="label-form-top">Date of Birth</label>
+                                <input type="text" class="form-control input-form-text" placeholder="" required="">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="label-form-top">Email</label>
+                                <input type="text" class="form-control input-form-text" placeholder="" required="">
+                            </div>
+                        </div>
+
+                        <div class="row" style="padding: 10px 0px;">
+                            <div class="col-md-4">
+                                <label class="label-form-top">Country</label>
+                                <input type="text" class="form-control input-form-text" placeholder="Female" required="">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="label-form-top">Citizenship</label>
+                                <input type="text" class="form-control input-form-text" placeholder="" required="">
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+
+                        <div class="row" style="padding: 10px 0px;">
+                            <div class="col-md-4">
+                                <label class="label-form-top">Skype</label>
+                                <input type="text" class="form-control input-form-text" placeholder="" required="">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="label-form-top">Phone</label>
+                                <input type="text" class="form-control input-form-text" placeholder="" required="">
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+
+                        <div class="row" style="padding: 10px 0px;">
+                            <div class="col-md-4">
+                                <label class="label-form-top">Courses</label>
+                                <input type="text" class="form-control input-form-text" placeholder="" required="">
+                            </div>
+                        </div>
+
+                        <div class="bg-education">
+                            <h4 class="edu-title">EDUCATION</h4>
+                            <div class="row">
+                                <div class="col-md-6 text-align">
+                                    <div style="width: 80%;">
+                                        <label class="label-form-top">Institution</label>
+                                        <input type="text" class="form-control input-form-text" placeholder="" required="">
+                                    </div>
+                                    <div class="flx-end">
+                                        <button type="button" class="btn btn-primary btn-ad">
+                                            <img class="" src="assets/images/users/add.png" alt="user-img">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="label-form-top">System</label>
+                                    <input type="text" class="form-control input-form-text" placeholder="" required="">
+                                </div>
+                            </div>
+                            <div class="row padd-form">
+                                <div class="col-md-7 text-align">
+                                    <div style="    width: 36%;">
+                                        <p class="yr-txt">FROM</p>
+                                    </div>
+                                    <div class="">
+                                        <label class="label-form-top">Year</label>
+                                        <input type="text" class="form-control input-form-text" placeholder="" required="">
+                                    </div>
+                                    <div style="    width: 36%;">
+                                        <p class="yr-txt">TO</p>
+                                    </div>
+                                    <div class="">
+                                        <label class="label-form-top">Year</label>
+                                        <input type="text" class="form-control input-form-text" placeholder="" required="">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="label-form-top">GPA</label>
+                                    <input type="text" class="form-control input-form-text" placeholder="" required="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="label-form-top">Subject</label>
+                                    <input type="text" class="form-control input-form-text" placeholder="" required="">
+                                </div>
+                                <div class="col-md-3 text-align">
+                                    <div>
+                                        <label class="label-form-top">Grade</label>
+                                        <input type="text" class="form-control input-form-text" placeholder="" required="">
+                                    </div>
+                                    <div class="flx-end">
+                                        <button type="button" class="btn btn-primary btn-ad">
+                                            <img class="" src="assets/images/users/add.png" alt="user-img">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary ripple light btn-push" (click)="modalLarge.hide()">Save</button>
+    </div>
+    <!-- <div class="app-modal-footer">
+              <button type="button" class="btn btn-primary ripple light" (click)="modalLarge.hide()">Save changes</button>
+            </div> -->
+</app-modal-basic>

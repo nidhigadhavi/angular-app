@@ -1,0 +1,348 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="text-align-bottom-10">
+      <ul class="breadcrumb">
+        <li>
+          <a>
+            <img src="assets/images/menu-icon/dashboard.png" style="width:26px;">Home</a>
+        </li>
+        <li>
+          <a class="pointercursor">
+            <img src="assets/images/menu-icon/Users.png" style="width:26px;">Users Management</a>
+        </li>
+        <li>
+          <a class="pointercursor">
+            <img src="assets/images/notification/alert.png" style="width:26px;">Overview</a>
+        </li>
+      </ul>
+    </div>
+    <p class="alert-text mb-0">
+      <img src="assets/images/notification/alert.png" style="width: 26px;">&nbsp;View and manage all registered user profile</p>
+  </div>
+  <div class="col-md-6">
+    <div style="text-align: right">
+      <button type="button" class="btn btn-primary btn-assets" (click)="createUser()">
+        <i class="icon-plus" style="font-weight: bold;"></i>
+        Create User
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="row sort-box" [formGroup]="UserSettingSearchForm">
+  <div class="col-md-2">
+    <div class="sort-box-title course-sort-box">
+      <div class="sort-dropdown">
+        Sort by
+        <i class="fa fa-sliders " aria-hidden="true" [ngbPopover]="popContent" placement="bottom" #p="ngbPopover" [autoClose]="'outside'"
+          (click)="$event.stopPropagation()"></i>
+      </div>
+      <div class="row-per-page">
+        <span>Rows per page :</span>
+        <select (change)="onPageSizeChanged($event.target.value)" class="sort-select">
+          <option *ngFor="let opt of limitOptions" [value]="opt.value">{{opt.key}}</option>
+        </select>
+      </div>
+    </div>
+
+    <ng-template #popContent>
+      <div>
+        <ul>
+          <li (click)="sortSelection('citizenship')" class="sort-listing">
+            <span id="citizenship-dot" class=""></span>
+            <span class="sort-selection-lable">Citizenship</span>
+          </li>
+          <li (click)="sortSelection('firstName')" class="sort-listing">
+            <span id="firstName-dot" class=""></span>
+            <span class="sort-selection-lable">First Name</span>
+          </li>
+          <li (click)="sortSelection('new')" class="sort-listing">
+            <span id="new-dot" class=""></span>
+            <span class="sort-selection-lable">New</span>
+          </li>
+          <li (click)="sortSelection('old')" class="sort-listing">
+            <span id="old-dot" class=""></span>
+            <span class="sort-selection-lable">Old</span>
+          </li>
+        </ul>
+      </div>
+    </ng-template>
+  </div>
+  <div class="col-md-7 sort-category">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <input type="text" name="name" id="name" class="form-control" formControlName="name" placeholder="Name" (change)="onFilterInstitution(null)"
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <select name="status" class="form-control" formControlName="role">
+            <option [value]=null>Chosse Role</option>
+            <option *ngFor="let status of [Analyst, Administrator, Manager]" [value]="status">Role {{status}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <select name="status" class="form-control" formControlName="status">
+            <option [value]=null>Chosse Status</option>
+            <option *ngFor="let status of [true, false]" [value]="status">{{status}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+
+        <div class="form-group select-arrow filter-date">
+
+          <angular2-date-picker style="border-bottom: 1px solid black !important;" name="date" formControlName="date" [settings]="settings">
+          </angular2-date-picker>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="cssSearchBox">
+      <label class="no-margin text-align">
+        <input type="search" class="form-control input-sm full-data-search noCssSearch wid-100" placeholder="Search here...">
+        <i class="icon-search searchIcon"></i>
+      </label>
+    </div>
+    <div class="">
+      <button type="reset" (click)="clearAll()" class="btn btn-primary btn-cancel mt-0 p-0">
+        <span class="clearall">CLEAR ALL</span>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 no-padding">
+    <div class="table-responsive">
+      <ngx-datatable #myTable class="material datagrid-table" [rows]="rows" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+        [rowHeight]="'auto'" [externalPaging]="true" [count]="page.totalElements" [offset]="page.pageNumber" [limit]="page.size"
+        (page)='setPage($event)' (sort)="sortCallback($event)">
+        <ngx-datatable-column name="Id" class="tab-head">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span>{{row.id}}</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Name">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{row.name}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Email">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{row.email}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Role">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{row.role}}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="CreatedAt">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+
+            <p class="">{{row.createdAt|date:'dd/MM/yyyy'}}</p>
+            <span class="">{{row.createdAt|date:'h:mm a'}}</span>
+
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Status">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <ui-switch class="js-single" color="#13b8eb" (change)="ActiavteDeactivate($event,row)" switchColor="#fff" size="small" [(ngModel)]="row.status"></ui-switch>
+
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="action">
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+            <!-- <a style="cursor: pointer" (click)="openMyModal($event)">View Details</a> -->
+            <a (click)="getUserById(row)">
+              <img src="assets/images/edit.png" alt="">
+            </a>
+            <a (click)="deleteUserById(row.id)">
+              <img src="assets/images/delete.png" alt="">
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<app-modal-basic #modalLarge [dialogClass]="'modal-lg'">
+
+  <div class="app-modal-body">
+    <div class="user-detail-box">
+      <div class="row">
+        <div class="col-md-6 text-left">
+          <h3>User Detail</h3>
+        </div>
+        <div class="col-md-6 text-right">
+          <button class="btn btn-primary btn-round ripple light" (click)="saveUpdateUserClaims()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="userPersonalInfoForm" #userPersonalInfoFormDirective="ngForm" id="userform">
+      <div class="user-detail-form">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="noti-title">First Name</label>
+            <input type="text" id="" class="form-control input-box" formControlName="firstName" placeholder="">
+          </div>
+          <div class="col-md-6">
+            <label class="noti-title">Last Name</label>
+            <input type="text" id="" class="form-control input-box" formControlName="lastName" placeholder="">
+          </div>
+          <div class="col-md-6">
+            <label class="noti-title">Email</label>
+            <input type="email" id="" class="form-control input-box" formControlName="email" placeholder="">
+          </div>
+          <div class="col-md-6">
+            <label class="noti-title">Password</label>
+            <input type="text" id="" class="form-control input-box" formControlName="password" placeholder="">
+          </div>
+        </div>
+        <!-- </form> -->
+      </div>
+
+      <div class="user-detail-box">
+        <div class="row">
+          <div class="col-md-6 text-left">
+            <h3 class="role-heading">Role / Access</h3>
+          </div>
+        </div>
+        <div class="role-type-box">
+          <div class="row">
+            <div class="col-md-6 text-left">
+              <!-- <form [formGroup]="userRoleForm" #userRoleFormDirective="ngForm" id="userRoleform"> -->
+              <h4>User Role</h4>
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary btn-toggle" [ngClass]="(rolename=='Administrator')?'active':''" (click)="roleChanged('Administrator')">
+                  <input type="radio" name="rolename" id="option1" value="Administrator" formControlName="rolename" [checked]="rolename == 'Administrator'"> Administrator
+                </label>
+                <label class="btn btn-secondary btn-toggle" [ngClass]="(rolename=='Manager')?'active':''" (click)="roleChanged('Manager')">
+                  <input type="radio" name="rolename" id="option2" formControlName="rolename" value="Manager" [checked]="rolename == 'Manager'"> Manager
+                </label>
+                <label class="btn btn-secondary btn-toggle" [ngClass]="(rolename=='Analyst')?'active':''" (click)="roleChanged('Analyst')">
+                  <input type="radio" name="rolename" id="option3" value='Analyst' formControlName="rolename" [checked]="rolename == 'Analyst'"> Analyst
+                </label>
+              </div>
+              <!-- </form> -->
+            </div>
+
+          </div>
+        </div>
+
+        <div class="role-type-box">
+          <div class="row">
+            <div class="col-md-6 text-left">
+              <!-- <form [formGroup]="userAccessPermissionForm" #userAccessPermissionFormDirective="ngForm" id="userAccessTypeform"> -->
+              <h4>Access Type</h4>
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+                <label class="btn btn-secondary btn-toggle" [ngClass]="(accessPermission=='write')?'active':''" (click)="accessPermissionChanged('write')">
+                  <input type="radio" name="accessPermission" id="option1" autocomplete="off" value="write" formControlName="accessPermission"
+                    [checked]="accessPermission == 'write'"> Full Write
+                </label>
+                <label class="btn btn-secondary btn-toggle" [ngClass]="(accessPermission=='readonly')?'active':''" (click)="accessPermissionChanged('readonly')">
+                  <input type="radio" name="accessPermission" id="option3" autocomplete="off" value='readonly' formControlName="accessPermission"
+                    [checked]="accessPermission == 'readonly'"> Read Only
+                </label>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+    <!-- Roll Based Permission Given -->
+    <div class="role-below-box" id="administrator" *ngIf="role == 'Administrator'">
+      <div class="row">
+        <div class="col-md-12">
+          <h3></h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="role-below-box" id="category-options" *ngIf="role == 'Manager'">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Category Options</h4>
+          <hr>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4 checkbox-page-option">
+              <form [formGroup]="mangerForm" #mangerFormDirective="ngForm">
+                <div class="checkbox-color checkbox-primary" *ngFor="let name of mangerForm.controls.category.controls; let i = index">
+                  <div formArrayName="category">
+                    <input id="checkboxWrite{{i}}" type="checkbox" [formControlName]='i'>
+                    <label for="checkboxWrite{{i}}">
+                      {{category[i].name}}
+                    </label>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="role-below-box" id="page-option" *ngIf="role == 'Analyst'">
+      <div class="row">
+        <div class="col-md-12">
+          <h4>Page Option</h4>
+          <hr>
+        </div>
+
+        <div class="col-md-12">
+          <form [formGroup]="analystForm" (ngSubmit)="submit()">
+            <div class="checkbox-page-option">
+              <div class="box checkbox-color checkbox-primary" *ngFor="let field of analystForm.controls.allClaims.controls; let i = index">
+                <h3 *ngIf="i==0"> {{allClaims[i].Category}}</h3>
+                <h3 *ngIf="i>0 && allClaims[i-1].Category !== allClaims[i].Category" style="color: black"> {{allClaims[i].Category}}</h3>
+                <div formArrayName="allClaims">
+                  <input id="checkboxWrite{{i}}" type="checkbox" [formControlName]='i'>
+                  <label for="checkboxWrite{{i}}">{{allClaims[i].field}}</label>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- <div class="col-md-12">
+            <div class="checkbox-page-option">
+              <form [formGroup]="analystForm" (ngSubmit)="submit()">
+                <div class="row">
+                <div class="col-md-6 checkbox-color checkbox-primary" *ngFor="let field of analystForm.controls.allClaims.controls; let i = index">                  
+                    <h3 *ngIf="i==0"> {{allClaims[i].Category}}</h3>
+                    <h3 *ngIf="i>0 && allClaims[i-1].Category !== allClaims[i].Category" style="color: black"> {{allClaims[i].Category}}</h3>
+                    <input id="checkboxWrite{{i}}" type="checkbox" formArrayName="allClaims">
+                    <label for="checkboxWrite{{i}}">{{allClaims[i].field}}</label>
+                </div></div>
+              </form>            
+          </div>
+        </div> -->
+
+        <!-- <div class="grid2x2">
+            <div class="box checkbox-color checkbox-primary" *ngFor="let field of analystForm.controls.allClaims.controls; let i = index">
+              <div>{{i}}
+                  <h3 *ngIf="i==0"> {{allClaims[i].Category}}</h3>
+                  <h3 *ngIf="i>0 && allClaims[i-1].Category !== allClaims[i].Category" style="color: black"> {{allClaims[i].Category}}</h3>
+                  <input id="checkboxWrite{{i}}" type="checkbox" formArrayName="allClaims">
+                  <label for="checkboxWrite{{i}}">{{allClaims[i].field}}</label>
+              </div>
+            </div>
+        </div> -->
+      </div>
+    </div>
+
+  </div>
+</app-modal-basic>
