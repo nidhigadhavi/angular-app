@@ -26,7 +26,7 @@
     "@types/lodash": "^4.14.139",
     "angular2-datatable": "^0.6.0",
     "angular2-datetimepicker": "^1.1.1",
-    "bootstrap": "^4.1.1",
+    "bootstrap": "^4.3.1",
     "c3": "^0.5.4",
     "core-js": "^2.5.4",
     "css-animator": "^2.3.0",
