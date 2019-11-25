@@ -1,0 +1,450 @@
+/**
+
+Template Name: Mega Able Admin Template
+Author: #
+Email: #
+File: style.scss
+**/
+
+
+/* =============
+  == Table of Contents==
+
+	- Custom Css
+	- Generic classes
+		-	Margin, Padding, Font class, text align, position, floating, overflow, background class, text color, display class, boarder class
+	- Theme Elements
+		-	Icons, Accordion, Button, Redial, floating actions, FAB, tabs, typography, buttons, box shadow, slider page, error page, Breadcrumb, pagination, Basic card, Login card
+	- General Elements
+		-	Modal, Nestable, Lable & Badges, List, Portlates, Preloader, Calender, To-Do, Materialize general elements, Lables
+	- Advance Form Elements
+	- Pages
+		-	Loader page, Invoice, Tasklist, Task detail, Range-slider, Counter, Maintenance, Color, FAQ, Progress, Panels & wells, Contact card, Auth pages, Flag
+		-	Gallery, Products pages, Widget, Email, Social timeline, Datatable, Chat, Blog, Wizard, CRM dashboard, Task board, Issue list, Chartlist, X-editable
+		-	Home chat, Dashboard 1-2-3-4
+	- Responsive media class
+
+============= */
+@import '~bootstrap/scss/bootstrap';
+@import "themify-icons/themify-icons";
+
+// General theme contents
+@import "partials/variables";
+@import "partials/mixins";
+@import "partials/general";
+@import "partials/generic";
+// Menu
+@import "partials/menu/pcmenu";
+// Important Theme elements
+@import "partials/theme-elements/button";
+@import "partials/theme-elements/form-elements";
+// Theme elements
+@import "partials/theme-elements/label-badges";
+@import "partials/theme-elements/icon-layout";
+@import "partials/theme-elements/ready-to-use";
+@import "partials/theme-elements/box-shadow";
+// Tables
+@import "partials/tables/tables";
+// Widget
+@import "partials/widget-dashboard/widget";
+@import "partials/widget-dashboard/dashboard";
+// Other
+@import "partials/other/alert";
+@import "partials/other/authentication";
+@import "partials/other/breadcrumb";
+@import "partials/other/charts";
+@import "partials/other/chat";
+@import "partials/other/color";
+@import "partials/other/draggable";
+@import "partials/other/e-payment";
+@import "partials/other/editors";
+@import "partials/other/fb-wall";
+@import "partials/other/full-calender";
+@import "partials/other/job-find";
+@import "partials/other/mail-pages";
+@import "partials/other/maps";
+@import "partials/other/navbars";
+@import "partials/other/note";
+@import "partials/other/prism";
+@import "partials/other/progress-bar";
+@import "partials/other/pre-loader";
+@import "partials/other/range-slider";
+@import "partials/other/rating";
+//To-do
+@import "partials/todo/todo";
+// Responsive css
+@import "partials/responsive/responsive";
+// dark layout css
+@import "partials/dark";
+
+@import "~ng2-toasty/style-default.css";
+@import "~ng2-toasty/style-bootstrap.css";
+@import "~ng2-toasty/style-material.css";
+
+//angular custom
+@import "partials/custom";
+
+.form-control::placeholder{ /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #495057 !important;
+  font-style: italic !important;
+  opacity: 0.7 !important; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #495057 !important;  
+  font-style: italic !important;
+  opacity: 0.7 !important; /* Firefox */
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #495057 !important;
+  font-style: italic !important;
+  opacity: 0.7 !important; /* Firefox */
+}
+
+
+// Table for list in all module.
+.main-menu{
+  min-height: 100vh;
+}
+.table-responsive .datatable-header-cell-label{
+    color: #13b8eb !important;
+}
+.table-responsive .ngx-datatable{
+	background-color: transparent !important;
+}
+.table-responsive .ngx-datatable.fixed-header .datatable-header .datatable-header-inner .datatable-header-cell{
+	background-color: #FFF !important;
+}
+.table-responsive .ngx-datatable .datatable-body .datatable-body-row{
+	background-color: #FFF !important;
+	margin: 5px 0px !important;
+}
+
+
+.table-responsive .ngx-datatable .datatable-body .datatable-body-row.active,
+{
+  background-color: red !important;
+}
+.table-responsive .ngx-datatable .datatable-body .datatable-body-row:not(:last-child){
+	margin-bottom: 0px !important;
+}
+.table-responsive .ngx-datatable .datatable-footer .datatable-footer-inner{
+	background-color: #FFF !important;
+}
+
+//
+
+// Datepicker for all module.
+
+.wc-date-container{
+	border: 1px solid #cccccc !important;
+	height: 40px !important;
+	padding: 5px 10px !important;
+	line-height: 30px !important;
+}
+.wc-date-container span{
+	color: #495057 !important;
+}
+.wc-date-container i{
+	color: #495057 !important;
+}
+
+.filter-date .wc-date-container{
+	border: none !important;
+	background: none !important;
+	font-size: 14px !important;
+	display: flex;
+	align-items: center;
+}
+
+.filter-date .wc-date-container span{
+	margin-right: 10px !important;
+}
+
+.filter-date .wc-date-container i{
+	font-size: 14px !important;
+}
+
+.user-modal .modal-content .modal-header{
+    background-color: #FFF !important;
+    border:none !important;
+}
+
+// bread crumb style for all module.
+.breadcrumb { 
+    display: flex;
+    align-items: center;
+    flex-flow: row;
+    list-style: none; 
+    font: 26px Helvetica, Arial, Sans-Serif;
+    padding: 5;
+    background-color: transparent !important;
+  }
+  .breadcrumb li { 
+    float: left; 
+  }
+  .breadcrumb li:hover{
+    cursor: pointer;
+  }
+  .breadcrumb li a {
+    color: white !important;
+    text-decoration: none; 
+    padding: 10px 10px 10px 50px;
+    background: #13b8eb; /* fallback color */
+    background: hsla(193,91%,50%,1); 
+    position: relative; 
+    display: block;
+    float: left;
+    transition: 0.5s !important;
+  }
+
+  .breadcrumb li a:after { 
+    content: " "; 
+    display: block; 
+    width: 0; 
+    height: 0;
+    border-top: 22px solid transparent;           /* Go big on the size, and let overflow hide */
+    border-bottom: 22px solid transparent;
+    border-left: 15px solid hsla(193,91%,50%,1);
+    position: absolute;
+    top: 0;
+    margin-top: 0px; 
+    left: 100%;
+    z-index: 2; 
+    transition: 0.5s !important;
+  }   
+  .breadcrumb li a:before { 
+    content: " "; 
+    display: block; 
+    width: 0; 
+    height: 0;
+    border-top: 22px solid transparent;           /* Go big on the size, and let overflow hide */
+    border-bottom: 22px solid transparent;
+    border-left: 15px solid white;
+    position: absolute;
+    top: 0;
+    margin-top: 0; 
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1; 
+    transition: 0.5s !important;
+  }
+  .breadcrumb li a:last-child:before{
+    display: none;
+  }
+  .breadcrumb li:first-child a {
+    padding-left: 10px;
+  }
+
+  .breadcrumb li:nth-child(2) a       { background:        hsla(193,91%,60%,1); }
+  .breadcrumb li:nth-child(2) a:after { border-left-color: hsla(193,91%,60%,1); }
+  .breadcrumb li:nth-child(3) a       { background:        hsla(193,91%,70%,1); }
+  .breadcrumb li:nth-child(3) a:after { border-left-color: hsla(193,91%,70%,1); }
+  .breadcrumb li:nth-child(4) a       { background:        hsla(193,91%,80%,1); }
+  .breadcrumb li:nth-child(4) a:after { border-left-color: hsla(193,91%,80%,1); }
+  .breadcrumb li:nth-child(5) a       { background:        hsla(193,91%,90%,1); }
+  .breadcrumb li:nth-child(5) a:after { border-left-color: hsla(193,91%,90%,1); }
+
+  .breadcrumb li:last-child a:after { 
+      border: 0; 
+  }
+
+  .breadcrumb li a:hover { 
+      background:hsla(193,91%,25%,1) ; 
+      color: #FFF !important; 
+      cursor: pointer !important;
+      transition: 0.5s !important;
+  }
+
+  .breadcrumb li a:hover:after { 
+      border-left-color: hsla(193,91%,25%,1) !important; 
+      color: #FFF !important; cursor: pointer !important;  
+      transition: 0.5s !important;
+  }
+  
+  .breadcrumb li:last-child a { 
+      background-color: rgb(30, 129, 156) !important; 
+      color: #FFF !important; cursor: pointer !important;  
+      transition: 0.5s !important;
+  }
+
+
+  
+// infinte scroll
+.scroll-box::-webkit-scrollbar {
+    width: 0.5em;
+}
+ 
+.scroll-box::-webkit-scrollbar-thumb {
+  background-color: #9d9d9d;
+  outline: 1px solid #9d9d9d;
+}
+
+
+ngx-datatable.student-profile-table .datatable-body-row.active .datatable-row-group{
+  background-color: #d6f3ff !important;
+}
+ngx-datatable.student-profile-table .datatable-body-row.active .datatable-row-group p.table-data-text{
+  font-weight: 600 !important;  
+  color: #1e1e1e !important;
+}
+ngx-datatable.student-profile-table .datatable-body-row.active .datatable-row-group  .datatable-body-cell{
+  font-weight: 600 !important;  
+  color: #1e1e1e !important;
+}
+
+@media (max-width : 768px){
+  .breadcrumb li a:after { 
+    content: " "; 
+    display: block; 
+    width: 0; 
+    height: 0;
+    border-top: 30px solid transparent;           /* Go big on the size, and let overflow hide */
+    border-bottom: 30px solid transparent;
+    border-left: 20px solid hsla(193,91%,50%,1);
+    position: absolute;
+    top: 0;
+    margin-top: 0px; 
+    left: 99%;
+    z-index: 2; 
+    transition: 0.5s !important;
+  }   
+  .breadcrumb li a:before { 
+    content: " "; 
+    display: block; 
+    width: 0; 
+    height: 0;
+    border-top: 30px solid transparent;           /* Go big on the size, and let overflow hide */
+    border-bottom: 30px solid transparent;
+    border-left: 20px solid white;
+    position: absolute;
+    top: 0;
+    margin-top: 0; 
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1; 
+    transition: 0.5s !important;
+  }
+}
+
+.sort-listing{
+  position: relative;
+}
+
+.sort-selection-dot{
+  height: 10px;
+  width: 10px;
+  background-color: hsla(193,91%,50%,1);
+  border-radius: 50%;  
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 6px;
+}
+
+.sort-selection-lable{
+  padding: 0 18px
+}
+.sort-dropdown{
+  margin-bottom: 20px;
+}
+.row-per-page span{
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.course-sort-box{
+  padding: 12px 0 0 0 !important;
+}
+.row-per-page select.sort-select{
+  padding: 0 10px !important;
+}
+
+.mt-10{
+  margin-top: 10px
+}
+.mt-15{
+  margin-top: 15px
+}
+.mt-20{
+  margin-top: 20px
+}
+.mt-25{
+  margin-top: 25px
+}
+.mt-30{
+  margin-top: 30px
+}
+
+.mb-10{
+  margin-bottom: 10px
+}
+.mb-15{
+  margin-bottom: 15px
+}
+.mb-2{
+  margin-bottom: 20px
+}
+.mb-25{
+  margin-bottom: 25px
+}
+.mb-30{
+  margin-bottom: 30px
+}
+
+.ml-10{
+  margin-bottom: 10px
+}
+.ml-15{
+  margin-bottom: 15px
+}
+.ml-2{
+  margin-bottom: 20px
+}
+.ml-25{
+  margin-bottom: 25px
+}
+.ml-30{
+  margin-bottom: 30px
+}
+
+.sort-category .form-group{
+  position: relative;
+  margin: 4px 0;
+  padding-right: 10px !important;
+}
+
+.sort-category .form-group.select-arrow:after{
+  border-bottom: 2px solid #13b8eb;
+  border-right: 2px solid #13b8eb;
+  content: '';
+  display: block;
+  height: 8px;
+  margin-top: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0px !important;
+  top: 16px;
+  -webkit-transform-origin: 66% 66%;
+  transform-origin: 66% 66%;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  width: 8px;
+}
+.select-arrow select.form-control {
+  padding:0px 10px  !important;
+}
+
+.select-arrow::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.select-arrow::-webkit-scrollbar-thumb {
+background-color: #13b8eb;
+outline: 1px solid #9d9d9d;
+}
+
+ngx-datatable.datagrid-table .datatable-body-row.active .datatable-row-group{
+  background-color: #fff !important;
+}
