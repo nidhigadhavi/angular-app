@@ -54,7 +54,7 @@
     "ngx-perfect-scrollbar": "^5.3.5",
     "ngx-quill-editor": "^2.2.2",
     "ngx-rangeslider-component": "^1.0.6",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "nouislider": "^11.1.0",
     "primeng": "^8.0.2",
     "rangeslider-js": "^3.2.5",
